@@ -1,0 +1,8 @@
+[book]
+authors = ["Onur"]
+language = "en"
+multilingual = false
+src = "src"
+
+[build]
+build-dir = "book"
