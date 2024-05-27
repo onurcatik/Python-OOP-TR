@@ -1,0 +1,339 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Inheritance &amp; subclasses</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../01_Classes-Instances/index.html"><strong aria-hidden="true">1.</strong> Class & Instances</a></li><li class="chapter-item expanded "><a href="../02_Class-Variables/index.html"><strong aria-hidden="true">2.</strong> Class & Variables</a></li><li class="chapter-item expanded "><a href="../03_classmethods-staticmethods/index.html"><strong aria-hidden="true">3.</strong> classmethods & staticmethods</a></li><li class="chapter-item expanded "><a href="../04_inheritance-subclasses/index.html" class="active"><strong aria-hidden="true">4.</strong> Inheritance & subclasses</a></li><li class="chapter-item expanded "><a href="../05_special-methods/index.html"><strong aria-hidden="true">5.</strong> Special Methods</a></li><li class="chapter-item expanded "><a href="../06_decorators/index.html"><strong aria-hidden="true">6.</strong> Decorators</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="kalıtım---alt-sınıflar-oluşturma"><a class="header" href="#kalıtım---alt-sınıflar-oluşturma">Kalıtım - Alt Sınıflar Oluşturma</a></h1>
+<p>Python'da kalıtım, mevcut bir sınıftan (ebeveyn sınıf) özellikleri ve yöntemleri devralan yeni bir sınıf (alt sınıf) oluşturmamıza olanak tanır. Bu özellik, kodun yeniden kullanılmasını ve mantıksal bir sınıf hiyerarşisi oluşturulmasını sağlar, böylece kodumuz daha düzenli ve sürdürülebilir hale gelir.</p>
+<h2 id="alt-sınıflar-oluşturma"><a class="header" href="#alt-sınıflar-oluşturma">Alt Sınıflar Oluşturma</a></h2>
+<p>Çalışmakta olduğumuz <code>Employee</code> sınıfını düşünün. Daha spesifik türde çalışanlar oluşturmak için, örneğin geliştiriciler ve yöneticiler, alt sınıflar oluşturabiliriz. Hem geliştiricilerin hem de yöneticilerin isim, e-posta ve maaş gibi özellikleri olacaktır ve bunlar zaten <code>Employee</code> sınıfında tanımlanmıştır. <code>Employee</code> sınıfından kalıtım yaparak bu kodu kopyalamadan yeniden kullanabiliriz.</p>
+<h2 id="alt-sınıf-oluşturma-Örneği"><a class="header" href="#alt-sınıf-oluşturma-Örneği">Alt Sınıf Oluşturma Örneği</a></h2>
+<p>Başlangıç olarak <code>Employee</code> sınıfından kalıtım yapan bir <code>Developer</code> alt sınıfı oluşturalım.</p>
+<pre><code class="language-python">class Employee:
+    raise_amount = 1.04
+    
+    def __init__(self, first, last, pay):
+        self.first = first
+        self.last = last
+        self.email = f"{first}.{last}@company.com"
+        self.pay = pay
+        
+    def fullname(self):
+        return f"{self.first} {self.last}"
+        
+    def apply_raise(self):
+        self.pay = int(self.pay * self.raise_amount)
+
+# Developer alt sınıfını oluşturma
+class Developer(Employee):
+    pass
+</code></pre>
+<p>Boş bir gövdeye sahip olsa bile, <code>Developer</code> <code>Employee</code> sınıfından tüm özellikleri ve yöntemleri devralır.</p>
+<h2 id="alt-sınıf-Örnekleri-oluşturma"><a class="header" href="#alt-sınıf-Örnekleri-oluşturma">Alt Sınıf Örnekleri Oluşturma</a></h2>
+<p>Şimdi <code>Developer</code> örnekleri oluşturabilir ve <code>Employee</code> gibi davrandıklarını görebiliriz.</p>
+<pre><code class="language-python">dev_1 = Developer('John', 'Doe', 50000)
+print(dev_1.email)  # Çıktı: john.doe@company.com
+</code></pre>
+<h2 id="alt-sınıfları-Özelleştirme"><a class="header" href="#alt-sınıfları-Özelleştirme">Alt Sınıfları Özelleştirme</a></h2>
+<p>Bir alt sınıfı özelleştirmek için yöntemleri ve özellikleri geçersiz kılabilir veya genişletebiliriz. Örneğin, geliştiricilerin farklı bir zam miktarına sahip olabileceğini varsayalım.</p>
+<pre><code class="language-python">class Developer(Employee):
+    raise_amount = 1.10
+</code></pre>
+<p>Artık, bir <code>Developer</code> örneğine zam uyguladığımızda, geçersiz kılınan <code>raise_amount</code> kullanılır.</p>
+<pre><code class="language-python">dev_1 = Developer('John', 'Doe', 50000)
+dev_1.apply_raise()
+print(dev_1.pay)  # Çıktı: 55000 (10% zam)
+</code></pre>
+<h2 id="yeni-Özellikler-ekleme"><a class="header" href="#yeni-Özellikler-ekleme">Yeni Özellikler Ekleme</a></h2>
+<p>Geliştiricinin bildiği programlama dilini gibi yeni bir özellik eklemek istediğimizi varsayalım. Bunun için <code>__init__</code> yöntemini geçersiz kılmamız gerekecek.</p>
+<pre><code class="language-python">class Developer(Employee):
+    raise_amount = 1.10
+    
+    def __init__(self, first, last, pay, prog_lang):
+        super().__init__(first, last, pay)
+        self.prog_lang = prog_lang
+</code></pre>
+<p><code>super()</code> kullanarak, <code>Employee</code> sınıfının <code>__init__</code> yöntemini çağırırız ve <code>first</code>, <code>last</code> ve <code>pay</code>'in orada başlatılmasını sağlarız. Daha sonra <code>prog_lang</code>'i <code>Developer</code> alt sınıfında başlatırız.</p>
+<pre><code class="language-python">dev_1 = Developer('John', 'Doe', 50000, 'Python')
+print(dev_1.prog_lang)  # Çıktı: Python
+</code></pre>
+<h2 id="başka-bir-alt-sınıf-oluşturma-manager"><a class="header" href="#başka-bir-alt-sınıf-oluşturma-manager">Başka Bir Alt Sınıf Oluşturma: Manager</a></h2>
+<p>Yöneticiler için bir alt sınıf oluşturalım, yöneticiler çalışanları denetleyebilir.</p>
+<pre><code class="language-python">class Manager(Employee):
+    def __init__(self, first, last, pay, employees=None):
+        super().__init__(first, last, pay)
+        if employees is None:
+            self.employees = []
+        else:
+            self.employees = employees
+    
+    def add_employee(self, emp):
+        if emp not in self.employees:
+            self.employees.append(emp)
+    
+    def remove_employee(self, emp):
+        if emp in self.employees:
+            self.employees.remove(emp)
+    
+    def print_employees(self):
+        for emp in self.employees:
+            print('--&gt;', emp.fullname())
+</code></pre>
+<h2 id="manager-sınıfını-kullanma"><a class="header" href="#manager-sınıfını-kullanma">Manager Sınıfını Kullanma</a></h2>
+<pre><code class="language-python">dev_1 = Developer('John', 'Doe', 50000, 'Python')
+dev_2 = Developer('Jane', 'Doe', 60000, 'Java')
+
+mgr_1 = Manager('Sue', 'Smith', 90000, [dev_1])
+mgr_1.add_employee(dev_2)
+mgr_1.print_employees()
+# Çıktı:
+# --&gt; John Doe
+# --&gt; Jane Doe
+</code></pre>
+<h2 id="built-in-fonksiyonlar-isinstance-ve-issubclass"><a class="header" href="#built-in-fonksiyonlar-isinstance-ve-issubclass">Built-in Fonksiyonlar: <code>isinstance</code> ve <code>issubclass</code></a></h2>
+<p>Python, kalıtımla çalışmak için iki yerleşik fonksiyon sağlar:</p>
+<ul>
+<li><code>isinstance(obj, class)</code>: <code>obj</code>'nin bir sınıfın örneği olup olmadığını kontrol eder.</li>
+<li><code>issubclass(sub, sup)</code>: <code>sub</code>'ın <code>sup</code>'un bir alt sınıfı olup olmadığını kontrol eder.</li>
+</ul>
+<pre><code class="language-python">print(isinstance(mgr_1, Manager))  # True
+print(isinstance(mgr_1, Employee))  # True
+print(isinstance(mgr_1, Developer))  # False
+
+print(issubclass(Developer, Employee))  # True
+print(issubclass(Manager, Employee))  # True
+print(issubclass(Manager, Developer))  # False
+</code></pre>
+<h2 id="gerçek-dünya-Örneği-flaskın-httpexception-sınıfı"><a class="header" href="#gerçek-dünya-Örneği-flaskın-httpexception-sınıfı">Gerçek Dünya Örneği: Flask'ın HTTPException Sınıfı</a></h2>
+<p>Flask web framework'ünde, <code>HTTPException</code> sınıfı, farklı HTTP hataları için belirli istisnalar oluşturarak alt sınıflamayı gösterir.</p>
+<pre><code class="language-python">from werkzeug.exceptions import HTTPException
+
+class BadRequest(HTTPException):
+    code = 400
+    description = 'Bad Request'
+</code></pre>
+<p><code>HTTPException</code> sınıfından kalıtım yaparak, <code>BadRequest</code> bu sınıfın tüm işlevselliğini devralır ve yalnızca gerekli olanı özelleştirir.</p>
+<h2 id="sonuç"><a class="header" href="#sonuç">Sonuç</a></h2>
+<p>Kalıtım, ebeveyn sınıflardan alt sınıflara kod yeniden kullanımı ve mantıksal sınıf hiyerarşisi oluşturulmasını sağlar. İhtiyaç duyulduğunda işlevselliği geçersiz kılabilir ve genişletebiliriz, böylece kodumuz daha modüler ve yönetilebilir hale gelir.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../03_classmethods-staticmethods/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../05_special-methods/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../03_classmethods-staticmethods/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../05_special-methods/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

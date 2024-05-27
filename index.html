@@ -1,0 +1,313 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Class &amp; Instances</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="01_Classes-Instances/index.html" class="active"><strong aria-hidden="true">1.</strong> Class & Instances</a></li><li class="chapter-item expanded "><a href="02_Class-Variables/index.html"><strong aria-hidden="true">2.</strong> Class & Variables</a></li><li class="chapter-item expanded "><a href="03_classmethods-staticmethods/index.html"><strong aria-hidden="true">3.</strong> classmethods & staticmethods</a></li><li class="chapter-item expanded "><a href="04_inheritance-subclasses/index.html"><strong aria-hidden="true">4.</strong> Inheritance & subclasses</a></li><li class="chapter-item expanded "><a href="05_special-methods/index.html"><strong aria-hidden="true">5.</strong> Special Methods</a></li><li class="chapter-item expanded "><a href="06_decorators/index.html"><strong aria-hidden="true">6.</strong> Decorators</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="sınıflar-ve-Örnekler"><a class="header" href="#sınıflar-ve-Örnekler">Sınıflar ve Örnekler</a></h1>
+<p>Bu eğitimde, Python'da sınıflar oluşturmayı ve kullanmayı öğreneceğiz ve dil içindeki nesne yönelimli programlama (OOP) kavramlarına odaklanacağız. Bu, OOP kavramlarını (kalıtım, sınıf ve örnek değişkenler, static methods, class methods ve daha fazlası) aşamalı olarak inceleyeceğimiz bir dizi eğitimin ilkidir.</p>
+<h2 id="neden-sınıflar-kullanılır"><a class="header" href="#neden-sınıflar-kullanılır">Neden Sınıflar Kullanılır?</a></h2>
+<ul>
+<li>Sınıflar, OOP'nin temel bir parçasıdır ve çoğu modern programlama dilinde kullanılır.</li>
+<li>Verilerimizi ve fonksiyonlarımızı (sırasıyla attributes ve methods olarak adlandırılır) mantıklı bir şekilde gruplayarak yeniden kullanılabilirliği ve ölçeklenebilirliği artırırlar.</li>
+<li>Sınıf oluşturma ve bunları yönetme, verimli ve bakımı kolay kod yazmak için önemlidir.</li>
+</ul>
+<h2 id="temel-bir-sınıf-oluşturma"><a class="header" href="#temel-bir-sınıf-oluşturma">Temel Bir Sınıf Oluşturma</a></h2>
+<ul>
+<li>Başlangıç olarak, bir çalışanı temsil eden basit bir sınıf oluşturalım.</li>
+<li>Python'da bir sınıf, <code>class</code> anahtar kelimesi ve sınıf adı kullanılarak tanımlanır.</li>
+<li>İşte boş bir sınıfın nasıl tanımlandığı:</li>
+</ul>
+<pre><code class="language-python">class Employee:
+    pass
+</code></pre>
+<p><code>pass</code> ifadesi, burada henüz tanımlanmamış attributes veya methods olduğunu belirtmek için kullanılır.</p>
+<h2 id="sınıf-ve-Örnek-farkı"><a class="header" href="#sınıf-ve-Örnek-farkı">Sınıf ve Örnek Farkı</a></h2>
+<ul>
+<li>Bir sınıf, örnekler oluşturmak için bir şablon görevi görür.</li>
+<li>Her örnek, sınıfa dayalı benzersiz bir nesneyi temsil eder. Örneğin:</li>
+</ul>
+<pre><code class="language-python">employee1 = Employee()
+employee2 = Employee()
+</code></pre>
+<p>Bu örnekte, <code>employee1</code> ve <code>employee2</code> <code>Employee</code> sınıfının farklı örnekleridir.</p>
+<h2 id="Örneklerin-attributes-eklemek"><a class="header" href="#Örneklerin-attributes-eklemek">Örneklerin Attributes Eklemek</a></h2>
+<p>Örnek değişkenleri, her örneğe özgü verileri içerir. Bir örneğe manuel olarak attributes ekleyebiliriz:</p>
+<pre><code class="language-python">employee1.first_name = 'onur'
+employee1.last_name = 'catik'
+employee1.email = 'onur.catik@mail.com'
+employee1.pay = 50000
+
+employee2.first_name = 'Test'
+employee2.last_name = 'User'
+employee2.email = 'test.user@mail.com'
+employee2.pay = 60000
+</code></pre>
+<h2 id="__init__-method-kullanımı"><a class="header" href="#__init__-method-kullanımı"><code>__init__</code> Method Kullanımı</a></h2>
+<ul>
+<li>Bu attributes'ları bir örnek oluştururken otomatik olarak ayarlamak için, <code>__init__</code> method kullanırız, bu initializer veya constructor olarak da bilinir.</li>
+<li><code>__init__</code> method, örnek değişkenlerini başlatmamızı sağlar.</li>
+<li>İşte bunun nasıl tanımlandığı:</li>
+</ul>
+<pre><code class="language-python">class Employee:
+    def __init__(self, first_name, last_name, pay):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.pay = pay
+        self.email = f"{first_name.lower()}.{last_name.lower()}@company.com"
+</code></pre>
+<p>Bir örnek oluştururken artık gerekli argümanları sağlıyoruz:</p>
+<pre><code class="language-python">employee1 = Employee('Corey', 'Schaefer', 50000)
+employee2 = Employee('Test', 'User', 60000)
+</code></pre>
+<p>Bu yaklaşım daha verimlidir ve hataları azaltır.</p>
+<h2 id="methods-tanımlama"><a class="header" href="#methods-tanımlama">Methods Tanımlama</a></h2>
+<p>Methods, bir sınıfla ilişkili fonksiyonlardır. Bir çalışanın tam adını görüntülemek için bir method ekleyelim:</p>
+<pre><code class="language-python">class Employee:
+    def __init__(self, first_name, last_name, pay):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.pay = pay
+        self.email = f"{first_name.lower()}.{last_name.lower()}@company.com"
+
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"
+</code></pre>
+<p>Bu method'u bir örnek üzerinde şu şekilde çağırabiliriz:</p>
+<pre><code class="language-python">print(employee1.full_name())
+print(employee2.full_name())
+</code></pre>
+<h2 id="yaygın-hatalar-selfi-unutmak"><a class="header" href="#yaygın-hatalar-selfi-unutmak">Yaygın Hatalar: <code>self</code>'i Unutmak</a></h2>
+<ul>
+<li>Yaygın hatalardan biri, metod tanımında ilk parametre olarak <code>self</code> eklemeyi unutmaktır.</li>
+<li><code>self</code>'i ihmal etmek bir hataya neden olur çünkü Python, nesneyi metoda otomatik olarak geçirir.</li>
+<li>Bu yüzden her zaman <code>self</code> eklemeyi unutmayın.</li>
+</ul>
+<pre><code class="language-python">def full_name(self):
+    return f"{self.first_name} {self.last_name}"
+</code></pre>
+<h2 id="class-method-ve-instance-method"><a class="header" href="#class-method-ve-instance-method">Class Method ve Instance Method</a></h2>
+<p>Instance methods, <code>self</code> kullanarak instance'a başvururken, bunlar aynı zamanda sınıf adı kullanılarak da çağrılabilir, ancak bu durumda instance açıkça iletilmelidir:</p>
+<pre><code class="language-python">print(Employee.full_name(employee1))
+</code></pre>
+<p>Bu örnek, <code>Employee.full_name(employee1)</code> çağrısının <code>employee1.full_name()</code> ile eşdeğer olduğunu gösterir.</p>
+<h2 id="sonuç"><a class="header" href="#sonuç">Sonuç</a></h2>
+<ul>
+<li>Bu eğitimde, sınıf ve örnek oluşturmanın temellerini, attributes'ları <code>__init__</code> method kullanarak başlatmayı ve methods tanımlamayı ele aldık. B</li>
+<li>u kavramları anlamak, Python'un OOP yeteneklerini kullanarak daha gelişmiş özellikler oluşturmak için çok önemlidir.</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+                            <a rel="next prefetch" href="02_Class-Variables/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+                    <a rel="next prefetch" href="02_Class-Variables/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

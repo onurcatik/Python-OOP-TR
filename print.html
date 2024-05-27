@@ -1,0 +1,802 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title></title>
+        <meta name="robots" content="noindex">
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="01_Classes-Instances/index.html"><strong aria-hidden="true">1.</strong> Class & Instances</a></li><li class="chapter-item expanded "><a href="02_Class-Variables/index.html"><strong aria-hidden="true">2.</strong> Class & Variables</a></li><li class="chapter-item expanded "><a href="03_classmethods-staticmethods/index.html"><strong aria-hidden="true">3.</strong> classmethods & staticmethods</a></li><li class="chapter-item expanded "><a href="04_inheritance-subclasses/index.html"><strong aria-hidden="true">4.</strong> Inheritance & subclasses</a></li><li class="chapter-item expanded "><a href="05_special-methods/index.html"><strong aria-hidden="true">5.</strong> Special Methods</a></li><li class="chapter-item expanded "><a href="06_decorators/index.html"><strong aria-hidden="true">6.</strong> Decorators</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="sınıflar-ve-Örnekler"><a class="header" href="#sınıflar-ve-Örnekler">Sınıflar ve Örnekler</a></h1>
+<p>Bu eğitimde, Python'da sınıflar oluşturmayı ve kullanmayı öğreneceğiz ve dil içindeki nesne yönelimli programlama (OOP) kavramlarına odaklanacağız. Bu, OOP kavramlarını (kalıtım, sınıf ve örnek değişkenler, static methods, class methods ve daha fazlası) aşamalı olarak inceleyeceğimiz bir dizi eğitimin ilkidir.</p>
+<h2 id="neden-sınıflar-kullanılır"><a class="header" href="#neden-sınıflar-kullanılır">Neden Sınıflar Kullanılır?</a></h2>
+<ul>
+<li>Sınıflar, OOP'nin temel bir parçasıdır ve çoğu modern programlama dilinde kullanılır.</li>
+<li>Verilerimizi ve fonksiyonlarımızı (sırasıyla attributes ve methods olarak adlandırılır) mantıklı bir şekilde gruplayarak yeniden kullanılabilirliği ve ölçeklenebilirliği artırırlar.</li>
+<li>Sınıf oluşturma ve bunları yönetme, verimli ve bakımı kolay kod yazmak için önemlidir.</li>
+</ul>
+<h2 id="temel-bir-sınıf-oluşturma"><a class="header" href="#temel-bir-sınıf-oluşturma">Temel Bir Sınıf Oluşturma</a></h2>
+<ul>
+<li>Başlangıç olarak, bir çalışanı temsil eden basit bir sınıf oluşturalım.</li>
+<li>Python'da bir sınıf, <code>class</code> anahtar kelimesi ve sınıf adı kullanılarak tanımlanır.</li>
+<li>İşte boş bir sınıfın nasıl tanımlandığı:</li>
+</ul>
+<pre><code class="language-python">class Employee:
+    pass
+</code></pre>
+<p><code>pass</code> ifadesi, burada henüz tanımlanmamış attributes veya methods olduğunu belirtmek için kullanılır.</p>
+<h2 id="sınıf-ve-Örnek-farkı"><a class="header" href="#sınıf-ve-Örnek-farkı">Sınıf ve Örnek Farkı</a></h2>
+<ul>
+<li>Bir sınıf, örnekler oluşturmak için bir şablon görevi görür.</li>
+<li>Her örnek, sınıfa dayalı benzersiz bir nesneyi temsil eder. Örneğin:</li>
+</ul>
+<pre><code class="language-python">employee1 = Employee()
+employee2 = Employee()
+</code></pre>
+<p>Bu örnekte, <code>employee1</code> ve <code>employee2</code> <code>Employee</code> sınıfının farklı örnekleridir.</p>
+<h2 id="Örneklerin-attributes-eklemek"><a class="header" href="#Örneklerin-attributes-eklemek">Örneklerin Attributes Eklemek</a></h2>
+<p>Örnek değişkenleri, her örneğe özgü verileri içerir. Bir örneğe manuel olarak attributes ekleyebiliriz:</p>
+<pre><code class="language-python">employee1.first_name = 'onur'
+employee1.last_name = 'catik'
+employee1.email = 'onur.catik@mail.com'
+employee1.pay = 50000
+
+employee2.first_name = 'Test'
+employee2.last_name = 'User'
+employee2.email = 'test.user@mail.com'
+employee2.pay = 60000
+</code></pre>
+<h2 id="__init__-method-kullanımı"><a class="header" href="#__init__-method-kullanımı"><code>__init__</code> Method Kullanımı</a></h2>
+<ul>
+<li>Bu attributes'ları bir örnek oluştururken otomatik olarak ayarlamak için, <code>__init__</code> method kullanırız, bu initializer veya constructor olarak da bilinir.</li>
+<li><code>__init__</code> method, örnek değişkenlerini başlatmamızı sağlar.</li>
+<li>İşte bunun nasıl tanımlandığı:</li>
+</ul>
+<pre><code class="language-python">class Employee:
+    def __init__(self, first_name, last_name, pay):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.pay = pay
+        self.email = f"{first_name.lower()}.{last_name.lower()}@company.com"
+</code></pre>
+<p>Bir örnek oluştururken artık gerekli argümanları sağlıyoruz:</p>
+<pre><code class="language-python">employee1 = Employee('Corey', 'Schaefer', 50000)
+employee2 = Employee('Test', 'User', 60000)
+</code></pre>
+<p>Bu yaklaşım daha verimlidir ve hataları azaltır.</p>
+<h2 id="methods-tanımlama"><a class="header" href="#methods-tanımlama">Methods Tanımlama</a></h2>
+<p>Methods, bir sınıfla ilişkili fonksiyonlardır. Bir çalışanın tam adını görüntülemek için bir method ekleyelim:</p>
+<pre><code class="language-python">class Employee:
+    def __init__(self, first_name, last_name, pay):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.pay = pay
+        self.email = f"{first_name.lower()}.{last_name.lower()}@company.com"
+
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"
+</code></pre>
+<p>Bu method'u bir örnek üzerinde şu şekilde çağırabiliriz:</p>
+<pre><code class="language-python">print(employee1.full_name())
+print(employee2.full_name())
+</code></pre>
+<h2 id="yaygın-hatalar-selfi-unutmak"><a class="header" href="#yaygın-hatalar-selfi-unutmak">Yaygın Hatalar: <code>self</code>'i Unutmak</a></h2>
+<ul>
+<li>Yaygın hatalardan biri, metod tanımında ilk parametre olarak <code>self</code> eklemeyi unutmaktır.</li>
+<li><code>self</code>'i ihmal etmek bir hataya neden olur çünkü Python, nesneyi metoda otomatik olarak geçirir.</li>
+<li>Bu yüzden her zaman <code>self</code> eklemeyi unutmayın.</li>
+</ul>
+<pre><code class="language-python">def full_name(self):
+    return f"{self.first_name} {self.last_name}"
+</code></pre>
+<h2 id="class-method-ve-instance-method"><a class="header" href="#class-method-ve-instance-method">Class Method ve Instance Method</a></h2>
+<p>Instance methods, <code>self</code> kullanarak instance'a başvururken, bunlar aynı zamanda sınıf adı kullanılarak da çağrılabilir, ancak bu durumda instance açıkça iletilmelidir:</p>
+<pre><code class="language-python">print(Employee.full_name(employee1))
+</code></pre>
+<p>Bu örnek, <code>Employee.full_name(employee1)</code> çağrısının <code>employee1.full_name()</code> ile eşdeğer olduğunu gösterir.</p>
+<h2 id="sonuç"><a class="header" href="#sonuç">Sonuç</a></h2>
+<ul>
+<li>Bu eğitimde, sınıf ve örnek oluşturmanın temellerini, attributes'ları <code>__init__</code> method kullanarak başlatmayı ve methods tanımlamayı ele aldık. B</li>
+<li>u kavramları anlamak, Python'un OOP yeteneklerini kullanarak daha gelişmiş özellikler oluşturmak için çok önemlidir.</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="sınıf-değişkenleri"><a class="header" href="#sınıf-değişkenleri">Sınıf Değişkenleri</a></h1>
+<p>Bu eğitimde, Python Nesne Yönelimli Programlama (OOP) içindeki sınıf değişkenlerini keşfedeceğiz. Önceki eğitimde, her örnek için benzersiz verileri saklayan örnek değişkenlerini ele aldık. Şimdi, bir sınıfın tüm örnekleri arasında paylaşılan sınıf değişkenlerini inceleyeceğiz.</p>
+<h2 id="sınıf-değişkenlerine-giriş"><a class="header" href="#sınıf-değişkenlerine-giriş">Sınıf Değişkenlerine Giriş</a></h2>
+<ul>
+<li>Sınıf değişkenleri, bir sınıfın tüm örnekleri için aynı olan niteliklerdir.</li>
+<li>Örnek değişkenlerinin aksine, her örnek için benzersiz olan sınıf değişkenleri, tüm örnekler arasında tutarlı bir değer korur.</li>
+</ul>
+<h3 id="Örnek-employee-sınıfı"><a class="header" href="#Örnek-employee-sınıfı">Örnek: Employee Sınıfı</a></h3>
+<ul>
+<li>Her çalışanın <code>name</code>, <code>email</code> ve <code>pay</code> gibi niteliklere sahip olduğu bir <code>Employee</code> sınıfını düşünelim.</li>
+<li>Bu nitelikler, her çalışana özeldir ve örnek değişkenleridir.</li>
+</ul>
+<pre><code class="language-python">class Employee:
+    def __init__(self, first, last, pay):
+        self.first = first
+        self.last = last
+        self.email = f"{first}.{last}@company.com"
+        self.pay = pay
+</code></pre>
+<h3 id="bir-sınıf-değişkeni-ekleme"><a class="header" href="#bir-sınıf-değişkeni-ekleme">Bir Sınıf Değişkeni Ekleme</a></h3>
+<ul>
+<li>Diyelim ki şirketimiz her yıl tüm çalışanlara zam yapıyor.</li>
+<li>Tüm çalışanlar için aynı olan zam miktarı, sınıf değişkeni için uygun bir adaydır.</li>
+<li>Sınıf değişkenini oluşturmadan önce, zam miktarını bir yöntem içinde kodlayalım:</li>
+</ul>
+<pre><code class="language-python">class Employee:
+    def __init__(self, first, last, pay):
+        self.first = first
+        self.last = last
+        self.email = f"{first}.{last}@company.com"
+        self.pay = pay
+
+    def apply_raise(self):
+        self.pay = int(self.pay * 1.04)
+</code></pre>
+<p><code>apply_raise</code> yöntemini test etme:</p>
+<pre><code class="language-python">emp1 = Employee('John', 'Doe', 50000)
+print(emp1.pay)  # Çıktı: 50000
+emp1.apply_raise()
+print(emp1.pay)  # Çıktı: 52000
+</code></pre>
+<h3 id="sınıf-değişkenlerinin-tanıtılması"><a class="header" href="#sınıf-değişkenlerinin-tanıtılması">Sınıf Değişkenlerinin Tanıtılması</a></h3>
+<ul>
+<li>Zam miktarını kodlamak ideal değildir.</li>
+<li>Bunun yerine, bir sınıf değişkeni tanıtalım:</li>
+</ul>
+<pre><code class="language-python">class Employee:
+    raise_amount = 1.04  # Sınıf değişkeni
+
+    def __init__(self, first, last, pay):
+        self.first = first
+        self.last = last
+        self.email = f"{first}.{last}@company.com"
+        self.pay = pay
+
+    def apply_raise(self):
+        self.pay = int(self.pay * self.raise_amount)
+</code></pre>
+<p>Sınıf değişkenlerine erişim:</p>
+<pre><code class="language-python">print(Employee.raise_amount)  # Çıktı: 1.04
+print(emp1.raise_amount)      # Çıktı: 1.04
+</code></pre>
+<h3 id="sınıf-ve-Örnek-değişkenleri"><a class="header" href="#sınıf-ve-Örnek-değişkenleri">Sınıf ve Örnek Değişkenleri</a></h3>
+<ul>
+<li>Niteliklere erişirken, Python öncelikle örneğin ad alanını kontrol eder.</li>
+<li>Bulunamazsa, sınıfın ad alanını kontrol eder.</li>
+<li>Örneğin, ad alanını yazdırmayı düşünelim:</li>
+</ul>
+<pre><code class="language-python">emp1 = Employee('John', 'Doe', 50000)
+print(emp1.__dict__)  # Örnek ad alanı: {'first': 'John', 'last': 'Doe', 'email': 'John.Doe@company.com', 'pay': 50000}
+print(Employee.__dict__)  # Sınıf ad alanı (içinde 'raise_amount' bulunur)
+</code></pre>
+<h3 id="sınıf-değişkenlerini-değiştirme"><a class="header" href="#sınıf-değişkenlerini-değiştirme">Sınıf Değişkenlerini Değiştirme</a></h3>
+<p>Sınıf değişkenini değiştirmek tüm örnekleri etkiler:</p>
+<pre><code class="language-python">Employee.raise_amount = 1.05
+print(Employee.raise_amount)  # Çıktı: 1.05
+print(emp1.raise_amount)      # Çıktı: 1.05
+</code></pre>
+<p>Bir örnek aracılığıyla değiştirilirse, yalnızca o örneği etkiler:</p>
+<pre><code class="language-python">emp1.raise_amount = 1.06
+print(emp1.raise_amount)      # Çıktı: 1.06
+print(Employee.raise_amount)  # Çıktı: 1.05
+</code></pre>
+<h3 id="Örnek-Çalışan-sayısını-takip-etme"><a class="header" href="#Örnek-Çalışan-sayısını-takip-etme">Örnek: Çalışan Sayısını Takip Etme</a></h3>
+<ul>
+<li>Sınıf değişkenlerinin yaygın bir kullanım durumu, tüm örnekler arasında paylaşılan verileri izlemektir.</li>
+<li>Örneğin, çalışan sayısını takip etmek:</li>
+</ul>
+<pre><code class="language-python">class Employee:
+    num_of_employees = 0  # Sınıf değişkeni
+
+    def __init__(self, first, last, pay):
+        self.first = first
+        self.last = last
+        self.email = f"{first}.{last}@company.com"
+        self.pay = pay
+        Employee.num_of_employees += 1
+</code></pre>
+<p><code>num_of_employees</code> değişkenini test etme:</p>
+<pre><code class="language-python">emp1 = Employee('John', 'Doe', 50000)
+emp2 = Employee('Jane', 'Smith', 60000)
+print(Employee.num_of_employees)  # Çıktı: 2
+</code></pre>
+<h2 id="sonuç-1"><a class="header" href="#sonuç-1">Sonuç</a></h2>
+<p>Sınıf değişkenleri, Python OOP'de güçlü bir özelliktir ve tüm örnekler arasında paylaşılan nitelikleri tanımlamaya olanak tanır. Sınıf değişkenleri, sınıf boyunca tutarlı özellikler ve davranışlar tanımlamak için kullanışlıdır.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="classmethods-ve-staticmethods"><a class="header" href="#classmethods-ve-staticmethods"><code>classmethods</code> ve <code>staticmethods</code></a></h1>
+<p>Bu derste, Python'daki regular methods, class methods ve static methods arasındaki farkları inceleyeceğiz. Bu ayrımları anlamak, temiz ve verimli nesne yönelimli kod yazmak için çok önemlidir.</p>
+<h2 id="regular-methods"><a class="header" href="#regular-methods">Regular Methods</a></h2>
+<p>Bir sınıftaki regular methods otomatik olarak ilk argüman olarak instance'ı alır. Bu argümana genellikle <code>self</code> adını veririz. Bu yöntemler instance üzerinde çalışır ve instance özelliklerine erişebilir ve bunları değiştirebilir.</p>
+<pre><code class="language-python">class Employee:
+    def __init__(self, first_name, last_name, pay):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.pay = pay
+        self.email = f"{first_name.lower()}.{last_name.lower()}@company.com"
+    
+    def fullname(self):
+        return f"{self.first_name} {self.last_name}"
+</code></pre>
+<p>Yukarıdaki örnekte, <code>fullname</code>, <code>self</code>'i ilk argüman olarak alan ve bu sayede <code>first_name</code> ve <code>last_name</code> gibi instance özelliklerine erişebilen bir regular method'dur.</p>
+<h2 id="class-methods"><a class="header" href="#class-methods">Class Methods</a></h2>
+<p>Class methods, ilk argüman olarak sınıfın kendisini alır, buna genellikle <code>cls</code> deriz. Bir class method tanımlamak için <code>@classmethod</code> decorator'ını kullanın.</p>
+<h3 id="class-method-oluşturma"><a class="header" href="#class-method-oluşturma">Class Method Oluşturma</a></h3>
+<p>Bir class-level değişken ayarlamak için bir class method tanımlayalım.</p>
+<pre><code class="language-python">class Employee:
+    raise_amount = 1.04
+    
+    @classmethod
+    def set_raise_amount(cls, amount):
+        cls.raise_amount = amount
+</code></pre>
+<p>Burada, <code>set_raise_amount</code>, <code>raise_amount</code> class değişkenini ayarlayan bir class method'dur. Geleneksel olarak, sınıfı temsil ettiğini belirtmek için ilk parametre adı olarak <code>cls</code> kullanırız, bu bir instance değildir.</p>
+<h3 id="class-methodsu-alternatif-yapıcılar-olarak-kullanma"><a class="header" href="#class-methodsu-alternatif-yapıcılar-olarak-kullanma">Class Methods'u Alternatif Yapıcılar Olarak Kullanma</a></h3>
+<p>Class methods, nesneleri başlatmanın farklı yollarını sağlayarak alternatif yapıcılar olarak da kullanılabilir.</p>
+<pre><code class="language-python">class Employee:
+    def __init__(self, first_name, last_name, pay):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.pay = pay
+        self.email = f"{first_name.lower()}.{last_name.lower()}@company.com"
+    
+    @classmethod
+    def from_string(cls, emp_str):
+        first_name, last_name, pay = emp_str.split('-')
+        return cls(first_name, last_name, int(pay))
+
+emp_str = 'John-Doe-70000'
+new_emp = Employee.from_string(emp_str)
+print(new_emp.email)
+</code></pre>
+<p>Bu örnekte, <code>from_string</code>, bir dizeyi ayrıştıran ve yeni bir <code>Employee</code> instance'ı döndüren bir class method'dur.</p>
+<h2 id="static-methods"><a class="header" href="#static-methods">Static Methods</a></h2>
+<p>Static methods herhangi bir özel ilk argüman almaz. Normal fonksiyonlar gibi davranırlar ancak sınıfın ad alanına aittirler. Bir static method tanımlamak için <code>@staticmethod</code> decorator'ını kullanın.</p>
+<h3 id="static-method-oluşturma"><a class="header" href="#static-method-oluşturma">Static Method Oluşturma</a></h3>
+<p>Static methods, sınıfla mantıksal bir bağlantıya sahip olan ancak sınıf veya instance değişkenlerine ihtiyaç duymayan yardımcı işlevler için kullanılır.</p>
+<pre><code class="language-python">class Employee:
+    
+    @staticmethod
+    def is_workday(day):
+        return day.weekday() not in (5, 6)  # 5 = Cumartesi, 6 = Pazar
+</code></pre>
+<p>Bu örnekte, <code>is_workday</code>, verilen bir günün iş günü olup olmadığını kontrol eden bir static method'dur. <code>self</code> veya <code>cls</code>'ye erişmesi gerekmediği için static method olarak uygundur.</p>
+<h3 id="static-methodsu-kullanma"><a class="header" href="#static-methodsu-kullanma">Static Methods'u Kullanma</a></h3>
+<p>Static methods sınıf veya instance üzerinden çağrılabilir.</p>
+<pre><code class="language-python">import datetime
+
+my_date = datetime.date(2023, 5, 15)
+print(Employee.is_workday(my_date))  # True ise my_date bir iş günüdür
+</code></pre>
+<h2 id="Özet"><a class="header" href="#Özet">Özet</a></h2>
+<ul>
+<li><strong>Regular Methods</strong>: Instance üzerinde çalışır ve ilk argüman olarak <code>self</code> alır.</li>
+<li><strong>Class Methods</strong>: Sınıf üzerinde çalışır ve ilk argüman olarak <code>cls</code> alır. Alternatif yapıcılar olarak kullanılabilir.</li>
+<li><strong>Static Methods</strong>: İlk argüman olarak <code>self</code> veya <code>cls</code> almaz. Sınıfla mantıksal olarak bağlantılı yardımcı işlevler için kullanılır.</li>
+</ul>
+<p>Bu farklı türdeki methodları anlamak, Python'da sağlam ve esnek sınıflar tasarlama yeteneğinizi artıracaktır.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="kalıtım---alt-sınıflar-oluşturma"><a class="header" href="#kalıtım---alt-sınıflar-oluşturma">Kalıtım - Alt Sınıflar Oluşturma</a></h1>
+<p>Python'da kalıtım, mevcut bir sınıftan (ebeveyn sınıf) özellikleri ve yöntemleri devralan yeni bir sınıf (alt sınıf) oluşturmamıza olanak tanır. Bu özellik, kodun yeniden kullanılmasını ve mantıksal bir sınıf hiyerarşisi oluşturulmasını sağlar, böylece kodumuz daha düzenli ve sürdürülebilir hale gelir.</p>
+<h2 id="alt-sınıflar-oluşturma"><a class="header" href="#alt-sınıflar-oluşturma">Alt Sınıflar Oluşturma</a></h2>
+<p>Çalışmakta olduğumuz <code>Employee</code> sınıfını düşünün. Daha spesifik türde çalışanlar oluşturmak için, örneğin geliştiriciler ve yöneticiler, alt sınıflar oluşturabiliriz. Hem geliştiricilerin hem de yöneticilerin isim, e-posta ve maaş gibi özellikleri olacaktır ve bunlar zaten <code>Employee</code> sınıfında tanımlanmıştır. <code>Employee</code> sınıfından kalıtım yaparak bu kodu kopyalamadan yeniden kullanabiliriz.</p>
+<h2 id="alt-sınıf-oluşturma-Örneği"><a class="header" href="#alt-sınıf-oluşturma-Örneği">Alt Sınıf Oluşturma Örneği</a></h2>
+<p>Başlangıç olarak <code>Employee</code> sınıfından kalıtım yapan bir <code>Developer</code> alt sınıfı oluşturalım.</p>
+<pre><code class="language-python">class Employee:
+    raise_amount = 1.04
+    
+    def __init__(self, first, last, pay):
+        self.first = first
+        self.last = last
+        self.email = f"{first}.{last}@company.com"
+        self.pay = pay
+        
+    def fullname(self):
+        return f"{self.first} {self.last}"
+        
+    def apply_raise(self):
+        self.pay = int(self.pay * self.raise_amount)
+
+# Developer alt sınıfını oluşturma
+class Developer(Employee):
+    pass
+</code></pre>
+<p>Boş bir gövdeye sahip olsa bile, <code>Developer</code> <code>Employee</code> sınıfından tüm özellikleri ve yöntemleri devralır.</p>
+<h2 id="alt-sınıf-Örnekleri-oluşturma"><a class="header" href="#alt-sınıf-Örnekleri-oluşturma">Alt Sınıf Örnekleri Oluşturma</a></h2>
+<p>Şimdi <code>Developer</code> örnekleri oluşturabilir ve <code>Employee</code> gibi davrandıklarını görebiliriz.</p>
+<pre><code class="language-python">dev_1 = Developer('John', 'Doe', 50000)
+print(dev_1.email)  # Çıktı: john.doe@company.com
+</code></pre>
+<h2 id="alt-sınıfları-Özelleştirme"><a class="header" href="#alt-sınıfları-Özelleştirme">Alt Sınıfları Özelleştirme</a></h2>
+<p>Bir alt sınıfı özelleştirmek için yöntemleri ve özellikleri geçersiz kılabilir veya genişletebiliriz. Örneğin, geliştiricilerin farklı bir zam miktarına sahip olabileceğini varsayalım.</p>
+<pre><code class="language-python">class Developer(Employee):
+    raise_amount = 1.10
+</code></pre>
+<p>Artık, bir <code>Developer</code> örneğine zam uyguladığımızda, geçersiz kılınan <code>raise_amount</code> kullanılır.</p>
+<pre><code class="language-python">dev_1 = Developer('John', 'Doe', 50000)
+dev_1.apply_raise()
+print(dev_1.pay)  # Çıktı: 55000 (10% zam)
+</code></pre>
+<h2 id="yeni-Özellikler-ekleme"><a class="header" href="#yeni-Özellikler-ekleme">Yeni Özellikler Ekleme</a></h2>
+<p>Geliştiricinin bildiği programlama dilini gibi yeni bir özellik eklemek istediğimizi varsayalım. Bunun için <code>__init__</code> yöntemini geçersiz kılmamız gerekecek.</p>
+<pre><code class="language-python">class Developer(Employee):
+    raise_amount = 1.10
+    
+    def __init__(self, first, last, pay, prog_lang):
+        super().__init__(first, last, pay)
+        self.prog_lang = prog_lang
+</code></pre>
+<p><code>super()</code> kullanarak, <code>Employee</code> sınıfının <code>__init__</code> yöntemini çağırırız ve <code>first</code>, <code>last</code> ve <code>pay</code>'in orada başlatılmasını sağlarız. Daha sonra <code>prog_lang</code>'i <code>Developer</code> alt sınıfında başlatırız.</p>
+<pre><code class="language-python">dev_1 = Developer('John', 'Doe', 50000, 'Python')
+print(dev_1.prog_lang)  # Çıktı: Python
+</code></pre>
+<h2 id="başka-bir-alt-sınıf-oluşturma-manager"><a class="header" href="#başka-bir-alt-sınıf-oluşturma-manager">Başka Bir Alt Sınıf Oluşturma: Manager</a></h2>
+<p>Yöneticiler için bir alt sınıf oluşturalım, yöneticiler çalışanları denetleyebilir.</p>
+<pre><code class="language-python">class Manager(Employee):
+    def __init__(self, first, last, pay, employees=None):
+        super().__init__(first, last, pay)
+        if employees is None:
+            self.employees = []
+        else:
+            self.employees = employees
+    
+    def add_employee(self, emp):
+        if emp not in self.employees:
+            self.employees.append(emp)
+    
+    def remove_employee(self, emp):
+        if emp in self.employees:
+            self.employees.remove(emp)
+    
+    def print_employees(self):
+        for emp in self.employees:
+            print('--&gt;', emp.fullname())
+</code></pre>
+<h2 id="manager-sınıfını-kullanma"><a class="header" href="#manager-sınıfını-kullanma">Manager Sınıfını Kullanma</a></h2>
+<pre><code class="language-python">dev_1 = Developer('John', 'Doe', 50000, 'Python')
+dev_2 = Developer('Jane', 'Doe', 60000, 'Java')
+
+mgr_1 = Manager('Sue', 'Smith', 90000, [dev_1])
+mgr_1.add_employee(dev_2)
+mgr_1.print_employees()
+# Çıktı:
+# --&gt; John Doe
+# --&gt; Jane Doe
+</code></pre>
+<h2 id="built-in-fonksiyonlar-isinstance-ve-issubclass"><a class="header" href="#built-in-fonksiyonlar-isinstance-ve-issubclass">Built-in Fonksiyonlar: <code>isinstance</code> ve <code>issubclass</code></a></h2>
+<p>Python, kalıtımla çalışmak için iki yerleşik fonksiyon sağlar:</p>
+<ul>
+<li><code>isinstance(obj, class)</code>: <code>obj</code>'nin bir sınıfın örneği olup olmadığını kontrol eder.</li>
+<li><code>issubclass(sub, sup)</code>: <code>sub</code>'ın <code>sup</code>'un bir alt sınıfı olup olmadığını kontrol eder.</li>
+</ul>
+<pre><code class="language-python">print(isinstance(mgr_1, Manager))  # True
+print(isinstance(mgr_1, Employee))  # True
+print(isinstance(mgr_1, Developer))  # False
+
+print(issubclass(Developer, Employee))  # True
+print(issubclass(Manager, Employee))  # True
+print(issubclass(Manager, Developer))  # False
+</code></pre>
+<h2 id="gerçek-dünya-Örneği-flaskın-httpexception-sınıfı"><a class="header" href="#gerçek-dünya-Örneği-flaskın-httpexception-sınıfı">Gerçek Dünya Örneği: Flask'ın HTTPException Sınıfı</a></h2>
+<p>Flask web framework'ünde, <code>HTTPException</code> sınıfı, farklı HTTP hataları için belirli istisnalar oluşturarak alt sınıflamayı gösterir.</p>
+<pre><code class="language-python">from werkzeug.exceptions import HTTPException
+
+class BadRequest(HTTPException):
+    code = 400
+    description = 'Bad Request'
+</code></pre>
+<p><code>HTTPException</code> sınıfından kalıtım yaparak, <code>BadRequest</code> bu sınıfın tüm işlevselliğini devralır ve yalnızca gerekli olanı özelleştirir.</p>
+<h2 id="sonuç-2"><a class="header" href="#sonuç-2">Sonuç</a></h2>
+<p>Kalıtım, ebeveyn sınıflardan alt sınıflara kod yeniden kullanımı ve mantıksal sınıf hiyerarşisi oluşturulmasını sağlar. İhtiyaç duyulduğunda işlevselliği geçersiz kılabilir ve genişletebiliriz, böylece kodumuz daha modüler ve yönetilebilir hale gelir.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="Özel-magicdunder-yöntemler"><a class="header" href="#Özel-magicdunder-yöntemler">Özel (Magic/Dunder) Yöntemler</a></h1>
+<p>Bu eğitimde Python'daki özel yöntemleri (magic yöntemler veya dunder yöntemler olarak da bilinir) inceleyeceğiz. Bu yöntemler, sınıflarımızda yerleşik davranışları taklit etmemize ve operatör aşırı yüklemeyi uygulamamıza olanak tanır. Kendi özel yöntemlerimizi tanımlayarak, nesnelerimizin yerleşik fonksiyonlar ve operatörlerle nasıl etkileşime girdiğini değiştirebilir, kullanışlılıklarını ve esnekliklerini artırabiliriz.</p>
+<h2 id="Özel-yöntemleri-anlamak"><a class="header" href="#Özel-yöntemleri-anlamak">Özel Yöntemleri Anlamak</a></h2>
+<p>Özel yöntemler, çift alt çizgi ile çevrilidir (<code>__</code>), bu nedenle "dunder" (çift alt çizgi anlamına gelir) adı verilir. Bu yöntemler, çeşitli işlemleri gerçekleştirmek için Python tarafından örtük olarak çağrılır. Örneğin, bir nesne örneği oluşturulduğunda <code>__init__</code> yöntemi çağrılır ve başlangıç durumu ve öznitelikleri ayarlanır.</p>
+<h3 id="yaygın-Özel-yöntemler"><a class="header" href="#yaygın-Özel-yöntemler">Yaygın Özel Yöntemler</a></h3>
+<ol>
+<li><strong><code>__init__</code></strong>: Bir sınıfın yeni bir örneğini başlatır.</li>
+<li><strong><code>__repr__</code></strong>: Nesnenin belirsiz bir temsilini sağlar, genellikle hata ayıklama için kullanılır.</li>
+<li><strong><code>__str__</code></strong>: Nesnenin okunabilir bir string temsilini döner, son kullanıcılar için kullanılır.</li>
+</ol>
+<h3 id="Örnek-nesne-temsilini-Özelleştirme"><a class="header" href="#Örnek-nesne-temsilini-Özelleştirme">Örnek: Nesne Temsilini Özelleştirme</a></h3>
+<p>Bir <code>Employee</code> sınıfını düşünün. Varsayılan olarak, bu sınıfın bir örneğini yazdırmak belirsiz bir çıktı verir. Bunu iyileştirmek için <code>__repr__</code> ve <code>__str__</code> kullanabiliriz.</p>
+<pre><code class="language-python">class Employee:
+    def __init__(self, first, last, pay):
+        self.first = first
+        self.last = last
+        self.pay = pay
+
+    def __repr__(self):
+        return f"Employee('{self.first}', '{self.last}', {self.pay})"
+
+    def __str__(self):
+        return f"{self.first} {self.last} - {self.email}"
+
+    @property
+    def email(self):
+        return f"{self.first.lower()}.{self.last.lower()}@company.com"
+
+# Örnek kullanım
+emp1 = Employee('John', 'Doe', 50000)
+print(emp1)          # __str__ çağırır
+print(repr(emp1))    # __repr__ çağırır
+</code></pre>
+<h3 id="aritmetik-İşlemler"><a class="header" href="#aritmetik-İşlemler">Aritmetik İşlemler</a></h3>
+<p>Özel yöntemler, aritmetik işlemleri de özelleştirmemize olanak tanır.</p>
+<pre><code class="language-python">class Employee:
+    def __init__(self, first, last, pay):
+        self.first = first
+        self.last = last
+        self.pay = pay
+
+    def __add__(self, other):
+        return self.pay + other.pay
+
+# Örnek kullanım
+emp1 = Employee('John', 'Doe', 50000)
+emp2 = Employee('Jane', 'Smith', 60000)
+print(emp1 + emp2)  # Çıktı: 110000
+</code></pre>
+<h3 id="uzunluk-hesaplama"><a class="header" href="#uzunluk-hesaplama">Uzunluk Hesaplama</a></h3>
+<p><code>len()</code> fonksiyonunu özel nesnelerde kullanmak için <code>__len__</code> yöntemini uygularız.</p>
+<pre><code class="language-python">class Employee:
+    def __init__(self, first, last, pay):
+        self.first = first
+        self.last = last
+        self.pay = pay
+
+    @property
+    def full_name(self):
+        return f"{self.first} {self.last}"
+
+    def __len__(self):
+        return len(self.full_name)
+
+# Örnek kullanım
+emp1 = Employee('John', 'Doe', 50000)
+print(len(emp1))  # Çıktı: 8 ("John Doe" uzunluğu)
+</code></pre>
+<h2 id="gerçek-dünya-Örnekleri"><a class="header" href="#gerçek-dünya-Örnekleri">Gerçek Dünya Örnekleri</a></h2>
+<h3 id="tarih-ve-zaman-İşlemleri"><a class="header" href="#tarih-ve-zaman-İşlemleri">Tarih ve Zaman İşlemleri</a></h3>
+<p>Standart kütüphanede, <code>datetime</code> modülü özel yöntemleri yoğun bir şekilde kullanır. Örneğin, <code>timedelta</code> sınıfı <code>__add__</code> yöntemini zaman ekleme işlemleri için uygular.</p>
+<pre><code class="language-python">from datetime import timedelta
+
+td1 = timedelta(days=5)
+td2 = timedelta(days=10)
+print(td1 + td2)  # Çıktı: 15 days, 0:00:00
+</code></pre>
+<h3 id="eşitlik-ve-karşılaştırma"><a class="header" href="#eşitlik-ve-karşılaştırma">Eşitlik ve Karşılaştırma</a></h3>
+<p><code>__eq__</code>, <code>__lt__</code> ve <code>__gt__</code> gibi özel yöntemler karşılaştırma işlemlerini etkinleştirir.</p>
+<pre><code class="language-python">class Employee:
+    def __init__(self, first, last, pay):
+        self.first = first
+        self.last = last
+        self.pay = pay
+
+    def __eq__(self, other):
+        return self.pay == other.pay
+
+    def __lt__(self, other):
+        return self.pay &lt; other.pay
+
+# Örnek kullanım
+emp1 = Employee('John', 'Doe', 50000)
+emp2 = Employee('Jane', 'Smith', 60000)
+print(emp1 == emp2)  # Çıktı: False
+print(emp1 &lt; emp2)   # Çıktı: True
+</code></pre>
+<h2 id="sonuç-3"><a class="header" href="#sonuç-3">Sonuç</a></h2>
+<p>Özel yöntemler, Python sınıflarının işlevselliğini ve esnekliğini önemli ölçüde artırır. Bu yöntemleri anlayarak ve kullanarak, daha sezgisel ve güçlü özel nesneler oluşturabilirsiniz.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="property-dekoratörleri---getters-setters-ve-deleters"><a class="header" href="#property-dekoratörleri---getters-setters-ve-deleters">Property Dekoratörleri - Getters, Setters ve Deleters</a></h1>
+<p>Bu eğitim, Python'da property dekoratörlerinin getter, setter ve deleter işlevselliğini uygulamak için nasıl kullanılacağını anlatmaktadır. Property dekoratörleri, diğer programlama dillerindeki özelliklere benzer şekilde, sınıf niteliklerini daha sezgisel ve temiz bir yaklaşımla yönetmeyi sağlar.</p>
+<h2 id="property-dekoratörlerine-giriş"><a class="header" href="#property-dekoratörlerine-giriş">Property Dekoratörlerine Giriş</a></h2>
+<p>Python'daki property dekoratörü, bir yöntemin bir öznitelikmiş gibi erişilmesine izin verir. Bu özellik, özellikle bir niteliğin değerinin sınıf içindeki diğer niteliklere bağlı olduğu durumlarda kullanışlıdır.</p>
+<h3 id="Örnek-senaryo"><a class="header" href="#Örnek-senaryo">Örnek Senaryo</a></h3>
+<p><code>email</code> niteliğinin <code>first_name</code> ve <code>last_name</code> niteliklerinden türetildiği bir <code>Employee</code> sınıfını düşünün. <code>first_name</code> veya <code>last_name</code> değiştiğinde, <code>email</code>in otomatik olarak bu değişiklikleri yansıtacak şekilde güncellenmesi gerekir. Property dekoratörleri kullanarak, bunu sınıfın arayüzünü değiştirmeden başarabiliriz.</p>
+<h3 id="İlk-ayar"><a class="header" href="#İlk-ayar">İlk Ayar</a></h3>
+<p>İlgili niteliklere ve yöntemlere odaklanan sadeleştirilmiş bir <code>Employee</code> sınıfı:</p>
+<pre><code class="language-python">class Employee:
+    def __init__(self, first_name, last_name):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.email = f"{first_name}.{last_name}@email.com"
+
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"
+</code></pre>
+<h3 id="sorun"><a class="header" href="#sorun">Sorun</a></h3>
+<p>İlk uygulamada, <code>first_name</code> veya <code>last_name</code> değiştirildiğinde <code>email</code> niteliği otomatik olarak güncellenmez. Bu durum tutarsızlıklara yol açabilir. Örneğin:</p>
+<pre><code class="language-python">emp = Employee('John', 'Smith')
+emp.first_name = 'Jim'
+print(emp.email)  # Çıktı: John.Smith@email.com (Yanlış)
+</code></pre>
+<h3 id="property-dekoratörlerinin-kullanımı"><a class="header" href="#property-dekoratörlerinin-kullanımı">Property Dekoratörlerinin Kullanımı</a></h3>
+<h4 id="getter"><a class="header" href="#getter">Getter</a></h4>
+<p>Öncelikle, <code>email</code> niteliğini bir property'ye dönüştüreceğiz. Bu, bir <code>email</code> yöntemi tanımlamayı ve <code>@property</code> dekoratörünü kullanmayı içerir.</p>
+<pre><code class="language-python">class Employee:
+    def __init__(self, first_name, last_name):
+        self.first_name = first_name
+        self.last_name = last_name
+
+    @property
+    def email(self):
+        return f"{self.first_name}.{self.last_name}@email.com"
+
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"
+</code></pre>
+<p>Bu değişiklikle, <code>email</code> mevcut <code>first_name</code> ve <code>last_name</code> değerlerine dayalı olarak dinamik olarak hesaplanır.</p>
+<h4 id="setter"><a class="header" href="#setter">Setter</a></h4>
+<p><code>full_name</code>in doğrudan ayarlanmasına izin vermek için, hem <code>first_name</code> hem de <code>last_name</code>i güncelleyecek şekilde, <code>@&lt;property_name&gt;.setter</code> dekoratörünü kullanacağız.</p>
+<pre><code class="language-python">class Employee:
+    def __init__(self, first_name, last_name):
+        self.first_name = first_name
+        self.last_name = last_name
+
+    @property
+    def email(self):
+        return f"{self.first_name}.{self.last_name}@email.com"
+
+    @property
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"
+
+    @full_name.setter
+    def full_name(self, name):
+        first, last = name.split(' ')
+        self.first_name = first
+        self.last_name = last
+</code></pre>
+<p>Artık <code>full_name</code>i doğrudan ayarlayabilir ve bu, <code>first_name</code> ve <code>last_name</code>i uygun şekilde güncelleyecektir:</p>
+<pre><code class="language-python">emp = Employee('John', 'Smith')
+emp.full_name = 'Jim Beam'
+print(emp.first_name)  # Çıktı: Jim
+print(emp.last_name)   # Çıktı: Beam
+print(emp.email)       # Çıktı: Jim.Beam@email.com
+</code></pre>
+<h4 id="deleter"><a class="header" href="#deleter">Deleter</a></h4>
+<p>Son olarak, <code>full_name</code> niteliği silindiğinde temizlik işlemlerini gerçekleştirmek için bir deleter tanımlayabiliriz.</p>
+<pre><code class="language-python">class Employee:
+    def __init__(self, first_name, last_name):
+        self.first_name = first_name
+        self.last_name = last_name
+
+    @property
+    def email(self():
+        return f"{self.first_name}.{self.last_name}@email.com"
+
+    @property
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"
+
+    @full_name.setter
+    def full_name(self, name):
+        first, last = name.split(' ')
+        self.first_name = first
+        self.last_name = last
+
+    @full_name.deleter
+    def full_name(self):
+        print("Deleting name!")
+        self.first_name = None
+        self.last_name = None
+</code></pre>
+<p>Deleter ile, <code>full_name</code> niteliği silindiğinde temizlik kodu tetiklenecektir:</p>
+<pre><code class="language-python">emp = Employee('John', 'Smith')
+del emp.full_name
+print(emp.first_name)  # Çıktı: None
+print(emp.last_name)   # Çıktı: None
+</code></pre>
+<h3 id="sonuç-4"><a class="header" href="#sonuç-4">Sonuç</a></h3>
+<p>Python'daki property dekoratörleri, sınıf niteliklerini yönetmek için güçlü bir mekanizma sağlar. <code>@property</code>, <code>@&lt;property_name&gt;.setter</code> ve <code>@&lt;property_name&gt;.deleter</code> kullanarak, nitelik değişikliklerinin doğru şekilde yönetildiğinden emin olabiliriz, sınıf arayüzünü bozmadan. Bu yaklaşım, kod okunabilirliğini ve sürdürülebilirliğini artırırken, karmaşık nitelik yönetimi için gereken esnekliği sağlar.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+        <script>
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+
+    </div>
+    </body>
+</html>
